@@ -1,3 +1,12 @@
+import torch
+import torch.nn as nn
+
+num = ['Fe', 'Cr', 'Ni', 'Mo', 'W', 'N', 'Nb', 'C', 'Si', 'Mn', 'Cu', 'P', 'S',
+        'Al', 'V', 'Ta', 'Re', 'Ce', 'Ti', 'Co', 'B', 'Mg', 'Y', 'Gd',
+         'Test Temp (C)', '[Cl-] M', 'pH', 'Scan Rate mV/s',
+        'Material class']
+num_target = ['Epit, mV (SCE)']
+
 class PitModel(torch.nn.Module):
     def __init__(self,  embedding_dim = 32, numerical_features= len(num)): #gpt_model,
         super().__init__()

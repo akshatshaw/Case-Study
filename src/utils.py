@@ -157,7 +157,7 @@ def trainer(
         "eval_frequency": eval_freq,
         "eval_iterations": eval_iter,
         "optimizer": optimizer.__class__.__name__,
-        "learning_rate": optimizer.param_groups['lr'],
+        "learning_rate": optimizer.param_groups[0]['lr'],
         "device": device,
         "model_name": model.__class__.__name__
     })
@@ -269,7 +269,7 @@ def trainer(
             "val_rmse": val_metrics['rmse'],
             "train_r2": train_metrics['r2'],
             "val_r2": val_metrics['r2'],
-            "learning_rate": optimizer.param_groups['lr']
+            "learning_rate": optimizer.param_groups[0]['lr']
         }, step=global_step)
 
         print(f"Training MAE: {train_metrics['mae']:.4f} | ", end="")

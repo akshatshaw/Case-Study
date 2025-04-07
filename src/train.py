@@ -1,4 +1,7 @@
 from utils import *
+import warnings
+import tiktoken
+tokenizer = tiktoken.get_encoding("gpt2")
 
 import os
 import time
@@ -12,7 +15,7 @@ wandb.login(key = os.getenv("WANDB_API_KEY"))
 
 
 
-data = pd.read_csv(r"..\Code\pit_cleaned_final.csv")
+data = pd.read_csv(r"C:\Users\AKSHAT SHAW\OneDrive - iitr.ac.in\Desktop\SEM 6\case-study\Code\pit_cleaned_final.csv")
 num = ['Fe', 'Cr', 'Ni', 'Mo', 'W', 'N', 'Nb', 'C', 'Si', 'Mn', 'Cu', 'P', 'S',
         'Al', 'V', 'Ta', 'Re', 'Ce', 'Ti', 'Co', 'B', 'Mg', 'Y', 'Gd',
          'Test Temp (C)', '[Cl-] M', 'pH', 'Scan Rate mV/s',
@@ -84,8 +87,10 @@ val_num_loader = DataLoader(
 
 
 
-if __name__:"__main__":
+if __name__ =="__main__":
     from model import PitModel
+    warnings.simplefilter(action='ignore', category=FutureWarning)
+
     model = PitModel()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -93,7 +98,7 @@ if __name__:"__main__":
     start_time = time.time()
     torch.manual_seed(123)
 
-    run_name = "lstm-6-no-txt-grad"
+    run_name = "trainer-test"
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001, weight_decay=0.1)
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
