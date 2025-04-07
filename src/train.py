@@ -15,7 +15,7 @@ wandb.login(key = os.getenv("WANDB_API_KEY"))
 
 
 
-data = pd.read_csv(r"C:\Users\AKSHAT SHAW\OneDrive - iitr.ac.in\Desktop\SEM 6\case-study\Code\pit_cleaned_final.csv")
+data = pd.read_csv(r"/home/user4/lucifer/case-study/Code/pit_cleaned_final.csv")
 num = ['Fe', 'Cr', 'Ni', 'Mo', 'W', 'N', 'Nb', 'C', 'Si', 'Mn', 'Cu', 'P', 'S',
         'Al', 'V', 'Ta', 'Re', 'Ce', 'Ti', 'Co', 'B', 'Mg', 'Y', 'Gd',
          'Test Temp (C)', '[Cl-] M', 'pH', 'Scan Rate mV/s',
@@ -98,7 +98,7 @@ if __name__ =="__main__":
     start_time = time.time()
     torch.manual_seed(123)
 
-    run_name = "trainer-test"
+    run_name = "trainer-test-2"
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001, weight_decay=0.1)
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
