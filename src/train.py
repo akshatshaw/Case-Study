@@ -93,12 +93,13 @@ if __name__ =="__main__":
 
     model = PitModel()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(torch.cuda.is_available())
     model.to(device)
     
     start_time = time.time()
     torch.manual_seed(123)
 
-    run_name = "trainer-test-2"
+    run_name = "gpt-1-dgx"
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001, weight_decay=0.1)
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
