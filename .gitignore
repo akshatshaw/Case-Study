@@ -2,3 +2,4 @@
 *wandb
 *.env
 *__pycache__
+*.pt
