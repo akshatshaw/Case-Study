@@ -2,42 +2,85 @@ import torch
 import torch.nn as nn
 from gpt import *
 # loading the orignal model
-CHOOSE_MODEL = "gpt2-small (124M)"
+# CHOOSE_MODEL = "gpt2-small (124M)"
 
+# BASE_CONFIG = {
+#  "vocab_size": 50257,
+#  "context_length": 1024,
+#  "drop_rate": 0.0,
+#  "qkv_bias": True
+# }
+# model_configs = {
+#  "gpt2-small (124M)": {"emb_dim": 768, "n_layers": 12, "n_heads": 12},
+#  "gpt2-medium (355M)": {"emb_dim": 1024, "n_layers": 24, "n_heads": 16},
+#  "gpt2-large (774M)": {"emb_dim": 1280, "n_layers": 36, "n_heads": 20},
+#  "gpt2-xl (1558M)": {"emb_dim": 1600, "n_layers": 48, "n_heads": 25},
+# }
+# BASE_CONFIG.update(model_configs[CHOOSE_MODEL])
+
+# GPT_CONFIG_124M = {
+#  "vocab_size": 50257,
+#  "context_length": 256, # We shorten the context length from 1,024 to 256 tokens. Original GPT-2 has a context length of 1,024 tokens.
+#  "emb_dim": 768,
+#  "n_heads": 12,
+#  "n_layers": 12,
+#  "drop_rate": 0.1,
+#  "qkv_bias": False
+# }
+
+# from gpt_download import download_and_load_gpt2, load_weights_into_gpt
+# from gpt import GPTModel
+# model_size = CHOOSE_MODEL.split(" ")[-1].lstrip("(").rstrip(")")
+
+# settings, params = download_and_load_gpt2(
+#         model_size=model_size, models_dir="gpt2"
+# )
+
+# gpt_model = GPTModel(BASE_CONFIG)
+# load_weights_into_gpt(gpt_model, params)
+
+import torch
+from gpt import GPTModel
 BASE_CONFIG = {
- "vocab_size": 50257,
- "context_length": 1024,
- "drop_rate": 0.0,
- "qkv_bias": True
+    "vocab_size": 50257,    # Vocabulary size
+    "context_length": 1024, # Context length
+    "drop_rate": 0.0,       # Dropout rate
+    "qkv_bias": True        # Query-key-value bias
 }
+
 model_configs = {
- "gpt2-small (124M)": {"emb_dim": 768, "n_layers": 12, "n_heads": 12},
- "gpt2-medium (355M)": {"emb_dim": 1024, "n_layers": 24, "n_heads": 16},
- "gpt2-large (774M)": {"emb_dim": 1280, "n_layers": 36, "n_heads": 20},
- "gpt2-xl (1558M)": {"emb_dim": 1600, "n_layers": 48, "n_heads": 25},
+    "gpt2-small (124M)": {"emb_dim": 768, "n_layers": 12, "n_heads": 12},
+    "gpt2-medium (355M)": {"emb_dim": 1024, "n_layers": 24, "n_heads": 16},
+    "gpt2-large (774M)": {"emb_dim": 1280, "n_layers": 36, "n_heads": 20},
+    "gpt2-xl (1558M)": {"emb_dim": 1600, "n_layers": 48, "n_heads": 25},
 }
+
+CHOOSE_MODEL = "gpt2-small (124M)"
 BASE_CONFIG.update(model_configs[CHOOSE_MODEL])
 
-GPT_CONFIG_124M = {
- "vocab_size": 50257,
- "context_length": 256, # We shorten the context length from 1,024 to 256 tokens. Original GPT-2 has a context length of 1,024 tokens.
- "emb_dim": 768,
- "n_heads": 12,
- "n_layers": 12,
- "drop_rate": 0.1,
- "qkv_bias": False
-}
+file_name = "gpt2-small-124M.pth"
+# file_name = "gpt2-medium-355M.pth"
+# file_name = "gpt2-large-774M.pth"
+# file_name = "gpt2-xl-1558M.pth"
+import os
+import urllib.request
 
-from gpt_download import download_and_load_gpt2, load_weights_into_gpt
-from gpt import GPTModel
-model_size = CHOOSE_MODEL.split(" ")[-1].lstrip("(").rstrip(")")
+url = f"https://huggingface.co/rasbt/gpt2-from-scratch-pytorch/resolve/main/{file_name}"
 
-settings, params = download_and_load_gpt2(
-        model_size=model_size, models_dir="gpt2"
-)
+if not os.path.exists(file_name):
+    print(f"Downloading {file_name}...")
+    urllib.request.urlretrieve(url, file_name)
+    print(f"Downloaded to {file_name}")
+else:
+    print(f"File already exists and is up-to-date: {file_name}")
 
 gpt_model = GPTModel(BASE_CONFIG)
-load_weights_into_gpt(gpt_model, params)
+gpt_model.load_state_dict(torch.load(file_name, weights_only=True))
+gpt_model.eval()
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+gpt_model.to(device)
+
 
 gpt_model.eval()
 for param in gpt_model.parameters():
