@@ -62,38 +62,38 @@ file_name = "gpt2-small-124M.pth"
 # file_name = "gpt2-medium-355M.pth"
 # file_name = "gpt2-large-774M.pth"
 # file_name = "gpt2-xl-1558M.pth"
-import os
-import urllib.request
+# import os
+# import urllib.request
 
-url = f"https://huggingface.co/rasbt/gpt2-from-scratch-pytorch/resolve/main/{file_name}"
+# url = f"https://huggingface.co/rasbt/gpt2-from-scratch-pytorch/resolve/main/{file_name}"
 
-if not os.path.exists(file_name):
-    print(f"Downloading {file_name}...")
-    urllib.request.urlretrieve(url, file_name)
-    print(f"Downloaded to {file_name}")
-else:
-    print(f"File already exists and is up-to-date: {file_name}")
+# if not os.path.exists(file_name):
+#     print(f"Downloading {file_name}...")
+#     urllib.request.urlretrieve(url, file_name)
+#     print(f"Downloaded to {file_name}")
+# else:
+#     print(f"File already exists and is up-to-date: {file_name}")
 
-gpt_model = GPTModel(BASE_CONFIG)
-gpt_model.load_state_dict(torch.load(file_name, weights_only=True))
-gpt_model.eval()
+# gpt_model = GPTModel(BASE_CONFIG)
+# gpt_model.load_state_dict(torch.load(file_name, weights_only=True))
+# gpt_model.eval()
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-gpt_model.to(device)
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# gpt_model.to(device)
 
 
-gpt_model.eval()
-for param in gpt_model.parameters():
-    param.requires_grad = False
+# gpt_model.eval()
+# for param in gpt_model.parameters():
+#     param.requires_grad = False
 
-torch.manual_seed(123)
+# torch.manual_seed(123)
 
-num_classes = 32 # we take a 32dim output form the gpt model for the representation of text.
+# num_classes = 32 # we take a 32dim output form the gpt model for the representation of text.
 
-gpt_model.out_head = torch.nn.Linear(
- in_features=BASE_CONFIG["emb_dim"],
- out_features=num_classes
-)
+# gpt_model.out_head = torch.nn.Linear(
+#  in_features=BASE_CONFIG["emb_dim"],
+#  out_features=num_classes
+# )
 
 
 
@@ -105,18 +105,18 @@ num = ['Fe', 'Cr', 'Ni', 'Mo', 'W', 'N', 'Nb', 'C', 'Si', 'Mn', 'Cu', 'P', 'S',
 num_target = ['Epit, mV (SCE)']
 
 class PitModel(torch.nn.Module):
-    def __init__(self, gpt_model = gpt_model,  embedding_dim = 32, numerical_features= len(num)): 
+    def __init__(self, gpt_model = None,  embedding_dim = 32, numerical_features= len(num)): 
         super().__init__()
         self.num_classes = embedding_dim + numerical_features
         
-        self.gpt_model = gpt_model
-        # self.tok_emb = nn.Embedding(50257, 256) #vocab size & emb_dim
-        # self.pos_emb = nn.Embedding(1024, 256) #context_length & emb_dim
-        # self.lstm = nn.LSTM(
-        #     input_size=256,
-        #     hidden_size=32,
-        #     batch_first=True,
-        # )
+        # self.gpt_model = gpt_model
+        self.tok_emb = nn.Embedding(50257, 256) #vocab size & emb_dim
+        self.pos_emb = nn.Embedding(1024, 256) #context_length & emb_dim
+        self.lstm = nn.LSTM(
+            input_size=256,
+            hidden_size=32,
+            batch_first=True,
+        )
         
         self.linear = torch.nn.Sequential(
             torch.nn.Linear(self.num_classes, 256),
@@ -132,17 +132,17 @@ class PitModel(torch.nn.Module):
         )
 
     def forward(self, x_num, x_text):
-        with torch.no_grad():  # Ensure no gradients are calculated for text processing
-            x = self.gpt_model(x_text)
-            x = x[:, -1, :]
+        # with torch.no_grad():  # Ensure no gradients are calculated for text processing
+        #     x = self.gpt_model(x_text)
+        #     x = x[:, -1, :]
         
-            # tok_embeds = self.tok_emb(x_text)
-            # pos_embeds = self.pos_emb(
-            #     torch.arange(1024, device=x_text.device)
-            # )
-            # x = tok_embeds + pos_embeds
-            # x = self.lstm(x)[0]
-            # x= x[:, -1, :]
+        tok_embeds = self.tok_emb(x_text)
+        pos_embeds = self.pos_emb(
+            torch.arange(1024, device=x_text.device)
+        )
+        x = tok_embeds + pos_embeds
+        x = self.lstm(x)[0]
+        x= x[:, -1, :]
         
         # Text features are now detached from computation graph
         x = x.detach()

@@ -45,7 +45,7 @@ val_data = Dataset_txt(
 
 
 num_workers = 0
-batch_size = 8
+batch_size = 64
 torch.manual_seed(123)
 
 train_loader = DataLoader(
@@ -99,7 +99,7 @@ if __name__ =="__main__":
     start_time = time.time()
     torch.manual_seed(123)
 
-    run_name = "gpt-1-dgx"
+    run_name = "lstm-1-grad-dgx"
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001, weight_decay=0.1)
     # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
