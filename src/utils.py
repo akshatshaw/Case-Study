@@ -1,17 +1,9 @@
-# trainer.py
-
 # Necessary imports
-import numpy as np
-import pandas as pd
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-import os
+from torch.utils.data import Dataset
 import wandb
-from dotenv import load_dotenv, dotenv_values
+
 
 # Dataset classes
 class Dataset_txt(Dataset):

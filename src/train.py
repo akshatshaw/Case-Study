@@ -6,8 +6,8 @@ tokenizer = tiktoken.get_encoding("gpt2")
 import os
 import time
 from torch.utils.data import DataLoader
-
-from dotenv import load_dotenv, dotenv_values 
+import pandas as pd
+from dotenv import load_dotenv
 load_dotenv() 
 
 import wandb
