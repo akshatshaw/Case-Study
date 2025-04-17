@@ -144,8 +144,8 @@ class PitModel(torch.nn.Module):
         x = self.lstm(x)[0]
         x= x[:, -1, :]
         
-        # Text features are now detached from computation graph
-        x = x.detach()
+        # # Text features are now detached from computation graph
+        # x = x.detach()
         
         x = torch.cat((x, x_num), dim=1)
         x = self.linear(x)
